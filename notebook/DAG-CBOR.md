@@ -1,0 +1,3 @@
+**Concise BInary Object Representaiton (CBOR)** is a data format that encodes binary data much like JSON encodes text data, without schema descriptions. Data items in CBOR can be tagged by a number so as to give additional semantics.
+
+**DAG-CBOR** is a codec that implements the **Interplanetary Linked Data (IPLD)** data model as a subset of CBOR. IPLD links together documents by content-addressing (referring to data by a hash of its content) using **Content Identifiers (CIDs)**.

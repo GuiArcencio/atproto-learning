@@ -1,6 +1,13 @@
-from storage.sqlite.engine import setup_connection
-from storage.sqlite.models import Base
+import dag_cbor
 
-engine = setup_connection()
+from crypto.keys import generate_key_pair, sign, verify_signature
 
-Base.metadata.create_all(engine)
+public_key, private_key = generate_key_pair()
+
+data = {
+    "ola": 3
+}
+
+signature = sign(private_key, dag_cbor.encode(data))
+
+print(verify_signature(public_key, dag_cbor.encode(data), signature))

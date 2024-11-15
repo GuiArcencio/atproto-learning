@@ -7,10 +7,19 @@ from mst.tree_entry import TreeEntry
 class TreeNode:
     left_node: Optional[CID]
     entries: list[TreeEntry]
+    
+class SignedCommit:
+    did: str
+    version: int
+    data: CID
+    revision: str
+    previous: None
+    signature: bytes
 
-    @staticmethod
-    def create_root() -> Self:
-        root = TreeNode()
-        root.left_node = None
-        root.entries = []
-        return root
+class UnsignedCommit:
+    did: str
+    version: int
+    data: CID
+    revision: str
+    previous: None
+    signature: bytes

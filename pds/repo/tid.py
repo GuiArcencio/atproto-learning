@@ -5,7 +5,7 @@ from pds.utils.encoding import base32_sortable_encode
 _CLOCK_ID = urandom(3)
 
 def generate_tid() -> str:
-    microseconds = (time_ns()) // 1000
+    microseconds = time_ns() // 1000
 
     # 53 bits
     tid_integer = (microseconds & 0x1fffffffffffff) << 10

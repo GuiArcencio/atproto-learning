@@ -3,12 +3,13 @@ from __future__ import annotations
 from typing import Optional, Self
 
 from dataclasses import dataclass
+from sqlalchemy.orm import Session
 
-from repo.cid import ContentAddressable
+from pds.repo.cid import ContentAddressable
 from multiformats import CID
-from repo.mst.tree_entry import TreeEntry
-from repo.cid import ContentAddressable
-from crypto.keys import sign
+from pds.repo.mst.tree_entry import TreeEntry
+from pds.repo.cid import ContentAddressable
+from pds.crypto.keys import sign
 
 @dataclass
 class TreeNode(ContentAddressable):
@@ -19,7 +20,7 @@ class TreeNode(ContentAddressable):
     def create_empty(cls) -> Self:
         return TreeNode(
             left_node=None,
-            entries=list()
+            entries=list(),
         )
     
     def to_json(self) -> dict:
@@ -27,7 +28,16 @@ class TreeNode(ContentAddressable):
             "l": self.left_node,
             "e": list(map(lambda e: e.to_json(), self.entries))
         }
+    
+    @classmethod
+    def from_json(cls, data: dict) -> Self:
+        return TreeNode(
+            left_node=data["l"],
+            entries=data["e"]
+        )
 
+# Intended to be used only as a temporary object
+# to be signed
 @dataclass
 class UnsignedCommit(ContentAddressable):
     did: str
@@ -43,6 +53,15 @@ class UnsignedCommit(ContentAddressable):
             "rev": self.revision,
             "prev": None
         }
+    
+    @classmethod
+    def from_json(cls, data: dict) -> Self:
+        return UnsignedCommit(
+            did=data["did"],
+            version=data["version"],
+            data=data["data"],
+            revision=data["rev"]
+        )
 
     def sign(self, signing_key: bytes) -> SignedCommit:
         serialized = self.to_cbor()
@@ -66,6 +85,16 @@ class SignedCommit(UnsignedCommit):
 
         return base_json
     
+    @classmethod
+    def from_json(cls, data: dict) -> Self:
+        return SignedCommit(
+            did=data["did"],
+            version=data["version"],
+            data=data["data"],
+            revision=data["rev"],
+            signature=data["sig"]
+        )
+    
     def to_unsigned(self) -> UnsignedCommit:
         return UnsignedCommit(
             did=self.did,
@@ -73,4 +102,8 @@ class SignedCommit(UnsignedCommit):
             data=self.data,
             revision=self.revision
         )
+    
+    def load_root(self, session: Session) -> TreeNode:
+        # TODO: assert is not None
+        return TreeNode.from_cid(session, self.data)
 

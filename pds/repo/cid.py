@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
+from typing import Self, Optional
 
 import dag_cbor
 from multiformats import CID
-from storage.models import DataBlock
-from crypto.hash import hash, MULTIHASH
+from sqlalchemy.orm import Session
+from pds.storage import repo_session, DataBlock
+from pds.crypto.hash import hash, MULTIHASH
 
 def generate_cid(data: bytes):
     return CID(
@@ -14,7 +16,6 @@ def generate_cid(data: bytes):
     )
 
 class ContentAddressable(ABC):
-    
     @abstractmethod
     def to_json(self) -> dict:
         pass
@@ -33,3 +34,19 @@ class ContentAddressable(ABC):
             cid=bytes(cid),
             content=content
         )
+    
+    
+    @classmethod
+    @abstractmethod
+    def from_json(cls, data: dict) -> Self:
+        pass
+
+    @classmethod
+    def from_cid(cls, session: Session, cid: CID) -> Optional[Self]:
+        block = DataBlock.get(session, bytes(cid))
+        if block is None: return None
+
+        _, content = block.decode()
+
+        return cls.from_json(content)
+

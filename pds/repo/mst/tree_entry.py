@@ -1,10 +1,10 @@
-from typing import Optional
+from typing import Optional, Self
 
 from dataclasses import dataclass
 
 from multiformats import CID
 
-from repo.cid import ContentAddressable
+from pds.repo.cid import ContentAddressable
 
 @dataclass
 class TreeEntry(ContentAddressable):
@@ -20,3 +20,12 @@ class TreeEntry(ContentAddressable):
             "v": self.value,
             "t": self.right_node
         }
+    
+    @classmethod
+    def from_json(cls, data: dict) -> Self:
+        return TreeEntry(
+            prefix_length=data["p"],
+            key_suffix=data["k"],
+            value=data["v"],
+            right_node=data["t"]
+        )

@@ -21,7 +21,7 @@ class DataBlock(RepoBase):
         return session.scalars(statement).all()
     
     @classmethod
-    def get(cls, cid: bytes, session: Session) -> Optional[Self]:
+    def get(cls, session: Session, cid: bytes) -> Optional[Self]:
         return session.get(cls, cid)
     
     def decode(self) -> tuple[CID, dict]:

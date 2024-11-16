@@ -3,7 +3,7 @@ from os import makedirs
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from storage.models import RepoBase
+from pds.storage.models import RepoBase
 
 def repo_session() -> sessionmaker:
     folder = "data"

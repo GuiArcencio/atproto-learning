@@ -7,16 +7,11 @@ from pds.crypto.hash import hash
 import dag_cbor
 
 def main():
-    pub, priv = generate_key_pair()
-    print(MerkleSearchTree.new("did:plc:teste", priv))
-
     with repo_session().begin() as session:
-        block: DataBlock
-        for block in DataBlock.get_all(session):
-            cid, content = block.decode()
+        # pub, priv = generate_key_pair()
+        # print(MerkleSearchTree.new(session, "did:plc:teste", priv))
 
-            print(cid.encode("base32"))
-            print(generate_cid(dag_cbor.encode(content)))
+        print(MerkleSearchTree.load(session).commit.load_root(session))
 
 if __name__ == "__main__":
     main()

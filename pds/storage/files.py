@@ -1,5 +1,4 @@
 from os import makedirs, path
-from typing import Optional
 import json
 
 _folder = "data"
@@ -16,7 +15,7 @@ def get_account_info() -> dict[str, str]:
 
 def update_account_info(**kwargs):
     if not path.exists(_filepath):
-        makedirs(_folder)
+        makedirs(_folder, exist_ok=True)
         with open(_filepath, "w") as f:
             f.write("{}")
 

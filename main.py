@@ -6,12 +6,14 @@ from multiformats import CID
 from pds.crypto.hash import hash
 import dag_cbor
 
+
 def main():
     with repo_session().begin() as session:
         # pub, priv = generate_key_pair()
         # print(MerkleSearchTree.new(session, "did:plc:teste", priv))
 
         print(MerkleSearchTree.load(session).commit.load_root(session))
+
 
 if __name__ == "__main__":
     main()

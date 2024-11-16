@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from pds.storage.models import RepoBase
 
+
 def repo_session() -> sessionmaker:
     folder = "data"
     makedirs(folder, exist_ok=True)

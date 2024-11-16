@@ -1,10 +1,10 @@
 from cryptography.hazmat.primitives.asymmetric import ec, utils
 from cryptography.hazmat.primitives.hashes import SHA256
 
-
 _CURVE = ec.SECP256R1()
-_ORDER = 0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551
+_ORDER = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551
 _ALGORITHM = ec.ECDSA(SHA256(), deterministic_signing=True)
+
 
 def generate_key_pair() -> tuple[bytes, bytes]:
     private_key = ec.generate_private_key(_CURVE)
@@ -18,6 +18,7 @@ def generate_key_pair() -> tuple[bytes, bytes]:
 
     return public_key_bytes, private_key_bytes
 
+
 def sign(private_key: bytes, data: bytes) -> bytes:
     key = ec.derive_private_key(int.from_bytes(private_key), _CURVE)
     signature = key.sign(data, _ALGORITHM)
@@ -28,6 +29,7 @@ def sign(private_key: bytes, data: bytes) -> bytes:
         s = _ORDER - s
 
     return utils.encode_dss_signature(r, s)
+
 
 def verify_signature(public_key: bytes, data: bytes, signature: bytes) -> bool:
     key = ec.EllipticCurvePublicKey.from_encoded_point(_CURVE, public_key)

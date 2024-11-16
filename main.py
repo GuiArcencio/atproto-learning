@@ -1,9 +1,9 @@
-from repo.mst.tree import MerkleSearchTree
-from repo.cid import generate_cid
-from crypto.keys import generate_key_pair, verify_signature
-from storage import repo_session, DataBlock
+from pds.repo.mst.tree import MerkleSearchTree
+from pds.repo.cid import generate_cid
+from pds.crypto.keys import generate_key_pair, verify_signature
+from pds.storage import repo_session, DataBlock
 from multiformats import CID
-from crypto.hash import hash
+from pds.crypto.hash import hash
 import dag_cbor
 
 def main():

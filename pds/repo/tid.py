@@ -1,11 +1,11 @@
 from time import time_ns
 from os import urandom
-from utils.encoding import base32_sortable_encoding
+from pds.utils.encoding import base32_sortable_encode
 
 _CLOCK_ID = urandom(3)
 
 def generate_tid() -> str:
-    microseconds = time_ns() // 1000
+    microseconds = (time_ns()) // 1000
 
     # 53 bits
     tid_integer = (microseconds & 0x1fffffffffffff) << 10
@@ -14,4 +14,4 @@ def generate_tid() -> str:
 
     tid_bytes = tid_integer.to_bytes(length=8, byteorder="big")
     
-    return base32_sortable_encoding(tid_bytes)
+    return base32_sortable_encode(tid_bytes)

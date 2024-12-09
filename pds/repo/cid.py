@@ -6,7 +6,7 @@ from multiformats import CID
 from sqlalchemy.orm import Session
 
 from pds.crypto.hash import MULTIHASH, hash
-from pds.storage import DataBlock, repo_session
+from pds.storage import DataBlock
 
 
 def generate_cid(data: bytes):
@@ -16,9 +16,9 @@ def generate_cid(data: bytes):
 
 
 class ContentAddressable(ABC):
+
     @abstractmethod
-    def to_json(self) -> dict:
-        pass
+    def to_json(self) -> dict: ...
 
     def to_cbor(self) -> bytes:
         return dag_cbor.encode(self.to_json())
@@ -26,16 +26,15 @@ class ContentAddressable(ABC):
     def to_cid(self) -> CID:
         return generate_cid(self.to_cbor())
 
-    def to_datablock(self) -> DataBlock:
+    def to_datablock(self, revision: str) -> DataBlock:
         content = self.to_cbor()
         cid = generate_cid(content)
 
-        return DataBlock(cid=bytes(cid), content=content)
+        return DataBlock(cid=bytes(cid), revision=revision, content=content)
 
     @classmethod
     @abstractmethod
-    def from_json(cls, data: dict) -> Self:
-        pass
+    def from_json(cls, data: dict) -> Self: ...
 
     @classmethod
     def from_cid(cls, session: Session, cid: CID) -> Optional[Self]:

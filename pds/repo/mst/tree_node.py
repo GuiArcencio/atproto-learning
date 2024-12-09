@@ -6,7 +6,7 @@ from typing import Optional, Self
 from multiformats import CID
 from sqlalchemy.orm import Session
 
-from pds.crypto.keys import sign
+from pds.crypto.keys import sign, verify_signature
 from pds.repo.cid import ContentAddressable
 from pds.repo.mst.tree_entry import TreeEntry
 
@@ -98,6 +98,10 @@ class SignedCommit(UnsignedCommit):
         return UnsignedCommit(
             did=self.did, version=self.version, data=self.data, revision=self.revision
         )
+
+    def verify_signature(self, public_key: bytes) -> bool:
+        data = self.to_unsigned().to_cbor()
+        return verify_signature(public_key, data, self.signature)
 
     def load_root(self, session: Session) -> TreeNode:
         # TODO: assert is not None
